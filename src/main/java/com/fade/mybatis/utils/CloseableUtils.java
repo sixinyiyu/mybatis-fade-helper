@@ -6,9 +6,6 @@ package com.fade.mybatis.utils;/**
  * Created by qingquanzhong on 2016/12/18.
  */
 
-import java.io.Closeable;
-import java.io.IOException;
-
 /**
  * Description: {一句话描述类是干什么的}<br/>
  *

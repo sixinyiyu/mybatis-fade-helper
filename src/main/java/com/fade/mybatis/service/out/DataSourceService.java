@@ -9,6 +9,7 @@ package com.fade.mybatis.service.out;/**
 import com.fade.mybatis.config.DataSourceConfig;
 import com.fade.mybatis.config.builder.DataSourceConfigBuilder;
 import com.fade.mybatis.enums.DbType;
+import com.fade.mybatis.enums.NamingStrategyType;
 import com.fade.mybatis.model.TableField;
 import com.fade.mybatis.model.TableInfo;
 import com.fade.mybatis.service.in.DbServiceHelper;
@@ -17,7 +18,7 @@ import com.fade.mybatis.utils.StringUtils;
 import java.util.List;
 
 /**
- * Description: {一句话描述类是干什么的}<br/>
+ * Description: 暴露对外的服务<br/>
  *
  * @author qingquanzhong
  * @version 1.0
@@ -36,6 +37,18 @@ public class DataSourceService {
 //        if (CollectionUtil.isNotEmpty(tables))
             service.getTableCloumns( "test");
     }
+     
+    
+    /**获取某类模板*/
+    public void getTemplate() {
+    	
+    }
+    
+    /*更新模板，没有就新增，有就覆盖*/
+    public void updateTemplate() {
+    	
+    }
+    
 
     /**
      * 获取数据库下所有表
@@ -56,4 +69,33 @@ public class DataSourceService {
         tableFields.forEach(System.out::println);
         return null;
     }
+    
+    
+    
+    /**
+     * 1.首先要知道数据库相关的配置(连接、用户名、密码、那个庫、生成那些表)
+     * 2.得到文件生成规则
+     * 3.设置文件保存路径
+     * 4.生成文件信息
+     * 
+     * 附功能
+     * 设置生成文件模板规则
+     */
+    
+    public void generateCode() {
+    		//利用vm模板生成
+    		
+    		//加载模板
+    	
+    		//根据选择的表
+    	
+    		//根据表单个生成xml/mapper/entity/BizService/bo
+    	
+    	
+    	
+    }
+    
+    
+    
+    
 }

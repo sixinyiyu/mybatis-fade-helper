@@ -42,6 +42,7 @@ public enum NamingStrategyType {
     /** 加前缀转驼峰 */
     plus_prefix_to_camel;
 
+	/**增加前缀*/
     public static String plusPrefix(String target, String prefix) {
         if (StringUtils.isBlank(target) || StringUtils.isBlank(prefix)) {
             return target;
@@ -50,10 +51,12 @@ public enum NamingStrategyType {
         return prefix + target;
     }
 
+    /**加前缀再转驼峰*/
     public static String plusPrefixAnd2Camel(String target, String prefix) {
         return underlineToCamel(plusPrefix(target, prefix));
     }
 
+    /**去掉固定前缀*/
     public static String removePrefix(String target, String prefix) {
         if (StringUtils.isBlank(target) || StringUtils.isBlank(prefix)) {
             return target;
@@ -62,10 +65,12 @@ public enum NamingStrategyType {
         return target.trim().replaceFirst(prefix.trim(), "");
     }
 
+    /**去掉前缀再转驼峰*/
     public static String removePrefixAnd2Camel(String target, String prefix) {
         return underlineToCamel(removePrefix(target, prefix));
     }
 
+    /**下划线转驼峰*/
     public static String underlineToCamel(String param) {
         if (StringUtils.isBlank(param)) {
             return "";

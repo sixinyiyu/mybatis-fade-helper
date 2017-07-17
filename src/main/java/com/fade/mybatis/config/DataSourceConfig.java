@@ -9,9 +9,6 @@ package com.fade.mybatis.config;/**
 import com.fade.mybatis.enums.DbType;
 import com.fade.mybatis.utils.StringUtils;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-
 /**
  * Description: 数据库配置信息<br/>
  *

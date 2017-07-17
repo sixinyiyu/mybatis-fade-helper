@@ -7,7 +7,7 @@ package com.fade.mybatis.config;/**
  */
 
 /**
- * Description: {一句话描述类是干什么的}<br/>
+ * Description:项目自动生成总体配置<br/>
  *
  * @author qingquanzhong
  * @version 1.0
@@ -34,4 +34,52 @@ public class GeneratorConfig {
     /**生成注释*/
     private Boolean generateComment = Boolean.TRUE;
 
+	public String getTableName() {
+		return tableName;
+	}
+
+	public void setTableName(String tableName) {
+		this.tableName = tableName;
+	}
+
+	public String getDomainName() {
+		return domainName;
+	}
+
+	public void setDomainName(String domainName) {
+		this.domainName = domainName;
+	}
+
+	public String getProjectFolder() {
+		return projectFolder;
+	}
+
+	public void setProjectFolder(String projectFolder) {
+		this.projectFolder = projectFolder;
+	}
+
+	public String getDomainPackage() {
+		return domainPackage;
+	}
+
+	public void setDomainPackage(String domainPackage) {
+		this.domainPackage = domainPackage;
+	}
+
+	public String getMapperPackage() {
+		return mapperPackage;
+	}
+
+	public void setMapperPackage(String mapperPackage) {
+		this.mapperPackage = mapperPackage;
+	}
+
+	public Boolean getGenerateComment() {
+		return generateComment;
+	}
+
+	public void setGenerateComment(Boolean generateComment) {
+		this.generateComment = generateComment;
+	}
+    
 }

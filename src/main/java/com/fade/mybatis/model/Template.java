@@ -20,7 +20,9 @@ import java.io.Serializable;
  */
 public class Template implements Serializable{
 
-    /**模版标识*/
+	private static final long serialVersionUID = 6879021516337954675L;
+
+	/**模版标识*/
     private Integer id;
 
     /**模版名称*/
@@ -34,11 +36,6 @@ public class Template implements Serializable{
 
     /**类型*/
     private TemplateType type;
-
-    public static void main(String[] args) {
-        String target = "121fwepovwe121";
-        System.out.printf(target.trim().replaceFirst("1214",""));
-    }
 
     public TemplateType getType() {
         return type;

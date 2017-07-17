@@ -1,6 +1,6 @@
 /**
- * <p>Copyright: Copyright (c) 2016</p>
  * <p>Company: fade </p>
+ * <p>Copyright: Copyright (c) 2016</p>
  */
 package com.fade.mybatis.service.in;/**
  * Created by qingquanzhong on 2016/12/18.
@@ -15,6 +15,10 @@ import com.fade.mybatis.utils.StringUtils;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.PreDestroy;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,6 +33,8 @@ import java.util.Properties;
  * @since JDK 1.8
  */
 public  class DbServiceHelper {
+	
+	private static final Logger log = LoggerFactory.getLogger(DbServiceHelper.class);
 
     private static final int LOGIN_TIME_OUT = 2;
 
@@ -50,6 +56,7 @@ public  class DbServiceHelper {
         List<TableInfo> tables = new ArrayList<TableInfo>();
         ResultSet resultSet = null;
         try{
+        		log.info("try to get talbes from {} (databases).", connection.getMetaData().getDatabaseProductName());
             DatabaseMetaData metaData = connection.getMetaData();
             resultSet = metaData.getTables(null, null, "%", new String[]{"TABLE"});
             TableInfo table;
@@ -58,6 +65,7 @@ public  class DbServiceHelper {
                 tables.add(table);
             }
         }catch (Exception e) {
+        		log.error("throw exception when try to get tables from database");
             throw new RuntimeException(e);
         }finally {
             CloseableUtils.closeQuietly(resultSet);
@@ -77,13 +85,18 @@ public  class DbServiceHelper {
         List<TableField> fields = new ArrayList<TableField>();
         try{
             DatabaseMetaData metaData = connection.getMetaData();
+            log.info("try to get {} (table's) cloumn", tableName);
             resultSet = metaData.getColumns(null, null, tableName, "%");
             TableField field;
             while (resultSet.next()) {
                 field = new TableField();
+                /**字段名*/
                 field.setName(resultSet.getString("COLUMN_NAME"));
+                /**描述*/
                 field.setComment(resultSet.getString("REMARKS"));
+                /**类型*/
                 field.setJdbcType(resultSet.getString("TYPE_NAME"));
+                /**是否允许空*/
                 /** 0:'YES'; 1:'NO'; 2:''*/
                 field.setNullAble(resultSet.getInt("NULLABLE")!= 1);
                 /** 默认值*/
@@ -141,6 +154,7 @@ public  class DbServiceHelper {
                 getConnection0();
             }
         }catch (SQLException e) {
+        	    log.error("Connection is not effective");
             throw new RuntimeException("Connection is not effective.");
         }
     }
@@ -162,6 +176,7 @@ public  class DbServiceHelper {
             return "Long";
         else if (targetType.contains("int"))
             return "Integer";
+        /**时间戳是否考虑用Date*/
         else if (targetType.equals("timestamp"))
             return "Timestamp";
         else if (targetType.equals("date") || targetType.equals("year"))

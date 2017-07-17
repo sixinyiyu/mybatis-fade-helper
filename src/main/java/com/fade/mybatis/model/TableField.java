@@ -7,7 +7,6 @@ package com.fade.mybatis.model;/**
  */
 
 import java.io.Serializable;
-import java.sql.JDBCType;
 
 /**
  * Description: {一句话描述类是干什么的}<br/>
@@ -19,7 +18,9 @@ import java.sql.JDBCType;
  */
 public class TableField implements Serializable {
 
-    /**列名*/
+	private static final long serialVersionUID = 4572636218095513192L;
+
+	/**列名*/
     private String name;
 
     /**注释*/
