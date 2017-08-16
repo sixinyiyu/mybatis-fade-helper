@@ -3,8 +3,9 @@
 ## 相关技术
 
    * Java8
-   * Springboot
+   * SpringBoot
    * Velocity
+   * PageHelper(分页查询使用V:5.0.2)
    * Vue.js+Element-UI
    
 ## 项目截图
@@ -33,6 +34,9 @@
 Mybatis配置：
 ![xml](wiki/xml.png)
 
+逻辑服务
+![service](wiki/service.png)
+
 ## 运行
 
 mvn install -Dmaven.test.skip=true
@@ -46,11 +50,11 @@ java  -jar boot.jar -jar mybatis-generator-helper-0.0.1-SNAPSHOT.jar --server.po
 
 ## 开发计划
 
-   * version 0.2 [planning]
+   * version 1.1 [planning]
    * (1) 模版更灵活化
    * (2) 生成更多通用代码
 
-   * version 0.1 [finished]
+   * version 1.0 [finished]
    * ~~(1) 项目搭建~~
    * ~~(2) 基于模版的项目生成~~
    * ~~(3) 可配置化
@@ -59,4 +63,5 @@ java  -jar boot.jar -jar mybatis-generator-helper-0.0.1-SNAPSHOT.jar --server.po
    
 ## 相关信息
 
+ 此项目平时学习开发过程中用来快速开发，节省约会时间。
  有任何问题可以联系[qingquanzhong@126.com]

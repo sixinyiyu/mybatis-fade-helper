@@ -32,7 +32,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	public ${table.keyField.propertyType} insert${table.entityName}(${entityName} entity) {
 	   ${table.keyField.propertyType} ${table.keyField.propertyName} = null;
 	   try {
-			${table.name}Mapper.insertSelective(entry);
+			${table.letterEntityName}Mapper.insertSelective(entry);
 			${table.keyField.propertyName} = entry.get${table.keyField.capitalSetPropertyName}();
 		} catch (Exception e) {
 			throw new DaoException("数据库异常", e);
@@ -44,7 +44,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	@Override
 	public void insert${table.entityName}s(List<${entityName}> records) {
 	   try {
-	   		${table.name}Mapper.insertRecords(records);
+	   		${table.letterEntityName}Mapper.insertRecords(records);
 	   } catch(Exception e) {
 	   		throw new DaoException("数据库异常", e);
 	   }
@@ -54,7 +54,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	@Override
 	public List<${entityName}> queryByCond(${entityName} entity) {
 		try {
-			return ${table.name}Mapper.queryByCond(entity);
+			return ${table.letterEntityName}Mapper.queryByCond(entity);
 		} catch(Exception e) {
 			throw new DaoException("数据库异常", e);
 		}
@@ -66,7 +66,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 		PageBo<${entityName}> result = null;
 		try {
 			Page<${entityName}> page = PageHelper.startPage(pageNum, pageSize)
-					.doSelectPage(() -> ${table.name}Mapper.queryByCond(entity));
+					.doSelectPage(() -> ${table.letterEntityName}Mapper.queryByCond(entity));
 			result = new Page<>(pageSize, pageNum, page.getResult(), Integer.getInteger(page.getTotal() + ""));
 		} catch (Exception e) {
 			throw new DaoException("数据库异常", e);
@@ -78,7 +78,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	@Override
 	public ${entityName} query${table.entityName}By${table.keyField.capitalPropertyName} (${table.keyField.propertyType} ${table.keyField.propertyName}) {
 		try {
-			return ${table.name}Mapper.queryBy${table.keyField.capitalPropertyName}(${table.keyField.propertyName});
+			return ${table.letterEntityName}Mapper.queryBy${table.keyField.capitalPropertyName}(${table.keyField.propertyName});
 		} catch(Exception e) {
 			throw new DaoException("数据库异常", e);
 		}
@@ -88,7 +88,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	@Override
 	public boolean update${table.entityName}By${table.keyField.capitalPropertyName} (${table.getCapitalName()} entity) {
 		try {
-			return ${table.name}Mapper.update${table.entityName}By${table.keyField.capitalPropertyName}(entity) > 0;
+			return ${table.letterEntityName}Mapper.update${table.entityName}By${table.keyField.capitalPropertyName}(entity) > 0;
 		} catch(Exception e) {
 			throw new DaoException("数据库异常", e);
 		}
@@ -98,7 +98,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	@Override
 	public boolean delete${table.entityName}By${table.keyField.capitalPropertyName} (${table.keyField.propertyType} ${table.keyField.propertyName}) {
 		try {
-			return ${table.name}Mapper.delete${table.entityName}By${table.keyField.capitalPropertyName}(${table.keyField.propertyName}) > 0;
+			return ${table.letterEntityName}Mapper.delete${table.entityName}By${table.keyField.capitalPropertyName}(${table.keyField.propertyName}) > 0;
 		} catch(Exception e) {
 			throw new DaoException("数据库异常", e);
 		}
