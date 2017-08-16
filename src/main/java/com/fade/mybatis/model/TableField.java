@@ -8,6 +8,8 @@ package com.fade.mybatis.model;/**
 
 import java.io.Serializable;
 
+import com.fade.mybatis.enums.NamingStrategyType;
+
 /**
  * Description: {一句话描述类是干什么的}<br/>
  *
@@ -40,6 +42,12 @@ public class TableField implements Serializable {
 
     /**属性类型*/
     private String propertyType;
+    
+    /**列类型 */
+    private String typeName;
+    
+    /**是否主键*/
+    private Boolean primary = Boolean.FALSE;
 
     public String getName() {
         return name;
@@ -77,6 +85,7 @@ public class TableField implements Serializable {
         return propertyType;
     }
 
+    /**{@linkplain #propertyType}*/
     public void setPropertyType(String propertyType) {
         this.propertyType = propertyType;
     }
@@ -96,18 +105,53 @@ public class TableField implements Serializable {
     public void setNullAble(Boolean nullAble) {
         this.nullAble = nullAble;
     }
+    
+    public Boolean getPrimary() {
+		return primary;
+	}
 
-    @Override
-    public String toString() {
-        final StringBuffer sb = new StringBuffer("TableField{");
-        sb.append("name='").append(name).append('\'');
-        sb.append(", comment='").append(comment).append('\'');
-        sb.append(", jdbcType='").append(jdbcType).append('\'');
-        sb.append(", defaultValue=").append(defaultValue);
-        sb.append(", nullAble=").append(nullAble);
-        sb.append(", propertyName='").append(propertyName).append('\'');
-        sb.append(", propertyType='").append(propertyType).append('\'');
-        sb.append('}');
-        return sb.toString();
+	public void setPrimary(Boolean primary) {
+		this.primary = primary;
+	}
+	
+	public String getTypeName() {
+		return typeName;
+	}
+
+	public void setTypeName(String typeName) {
+		this.typeName = typeName;
+	}
+
+	public String getCapitalPropertyName() {
+		return NamingStrategyType.toCapital(propertyName);
+	}
+
+	/**为set/get准备*/
+    public String getCapitalSetPropertyName(){
+    	return NamingStrategyType.plusPrefix(NamingStrategyType.toCapital(propertyName), "set");
     }
+    
+    public String getCapitalGetPropertyName(){
+    	return NamingStrategyType.plusPrefix(NamingStrategyType.toCapital(propertyName), "get");
+    }
+    
+    /**对Boolean is开头的属性处理*/
+    public String getBooleanPropertyName() {
+    	return NamingStrategyType.toLower(NamingStrategyType.removePrefix(propertyName, "is"));
+    }
+    
+    public String getBooleanSetPropertyName() {
+    	return NamingStrategyType.plusPrefix(NamingStrategyType.toCapital(NamingStrategyType.removePrefix(propertyName, "is")), "set");
+    }
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("TableField [name=").append(name).append(", comment=").append(comment).append(", jdbcType=")
+				.append(jdbcType).append(", defaultValue=").append(defaultValue).append(", nullAble=").append(nullAble)
+				.append(", propertyName=").append(propertyName).append(", propertyType=").append(propertyType)
+				.append(", primary=").append(primary).append("]");
+		return builder.toString();
+	}
+    
 }

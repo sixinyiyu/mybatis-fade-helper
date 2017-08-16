@@ -57,6 +57,7 @@ public class DataSourceConfigBuilder {
         config.setUrl(this.processUrl());
         config.setUserName(this.userName);
         config.setPassword(this.password);
+        config.setDbName(this.databaseName);
         config.argsCheck();
         return config;
     }
@@ -79,7 +80,7 @@ public class DataSourceConfigBuilder {
 
     private String processUrl() {
         if (DbType.mysql.equals(this.dbType)) {
-            return String.format(this.dbType.getUrl(), this.host, this.port, this.databaseName, null != this.encodeType ? this.encodeType :EncodeType.UTF8);
+            return String.format(this.dbType.getUrl(), this.host, this.port, this.databaseName, (null != this.encodeType ? this.encodeType :EncodeType.UTF8).getValue());
         }else if (DbType.oracle.equals(this.dbType)){
             return  String.format(this.dbType.getUrl(), this.host, this.port, this.databaseName);
         }

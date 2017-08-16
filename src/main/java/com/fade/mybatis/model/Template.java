@@ -31,8 +31,8 @@ public class Template implements Serializable{
     /**模版描述*/
     private String desc;
 
-    /**模版内容*/
-    private String content;
+    /**模版所在路径*/
+    private String path;
 
     /**类型*/
     private TemplateType type;
@@ -41,32 +41,36 @@ public class Template implements Serializable{
         return type;
     }
 
-    public void setType(TemplateType type) {
+    public Template setType(TemplateType type) {
         this.type = type;
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public Template setName(String name) {
         this.name = name;
+        return this;
     }
 
     public String getDesc() {
         return desc;
     }
 
-    public void setDesc(String desc) {
+    public Template setDesc(String desc) {
         this.desc = desc;
+        return this;
     }
 
-    public String getContent() {
-        return content;
+    public String getPath() {
+        return path;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public Template setPath(String path) {
+        this.path = path;
+        return this;
     }
 
     public Integer getId() {
@@ -83,7 +87,7 @@ public class Template implements Serializable{
         sb.append("id=").append(id);
         sb.append(", name='").append(name).append('\'');
         sb.append(", desc='").append(desc).append('\'');
-        sb.append(", content='").append(content).append('\'');
+        sb.append(", path='").append(path).append('\'');
         sb.append(", type='").append(type).append('\'');
         sb.append('}');
         return sb.toString();

@@ -1,0 +1,40 @@
+/**
+ * 
+ */
+package ${package.LogicServiceItf};
+
+import java.util.List;
+import ${package.Entity}.${entityName};
+
+/**
+ * Description: ${table.comment} 逻辑服务类<br/>
+ *
+ * @author ${author}
+ * @version 1.0
+ * @date: ${date}
+ * @since JDK 1.8
+ */
+public interface I${table.entityName}LogicService {
+
+	/**可选插入返回主键*/
+	${table.keyField.propertyType} insert${table.entityName}(${entityName} entity);
+	
+	/**批量插入*/
+	void insert${table.entityName}s(List<${entityName}> records);
+
+	/**条件查询*/
+	List<${entityName}> queryByCond(${entityName} entity);
+	
+	/**分页查询*/
+	Page<${entityName}> pageQueryByCond(${entityName} entity, int pageNum, int pageSize);
+	
+	/**主键查询*/
+	${entityName} query${table.entityName}By${table.keyField.capitalPropertyName} (${table.keyField.propertyType} ${table.keyField.propertyName});
+	
+	/**主键更新*/
+	boolean update${table.entityName}By${table.keyField.capitalPropertyName} (${entityName} entity);
+	
+	/**主键删除*/
+	boolean delete${table.entityName}By${table.keyField.capitalPropertyName} (${table.keyField.propertyType} ${table.keyField.propertyName});
+	
+}

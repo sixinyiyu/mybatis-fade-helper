@@ -9,6 +9,7 @@ package com.fade.mybatis.enums;/**
 import com.fade.mybatis.utils.CollectionUtil;
 import com.fade.mybatis.utils.StringUtils;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,53 +26,109 @@ public enum TemplateType {
     mapper_xml {
         @Override
         public String getDesc() {
+            return "Mapper xml配置模版";
+        }
+        
+        @Override
+        public String getValue() {
+
             return "mapper_xml";
         }
 
-        @Override
-        public String getValue() {
-
-            return "Mapper xml配置模版";
-        }
+		@Override
+		public String getPathTmeplate() {
+			return new StringBuilder(20).append("%s").append(File.separator).append("%s").append(File.separator).append("%sMapper.xml").toString();
+		}
     },mapper_java {
         @Override
         public String getDesc() {
+            return "Mapper java 接口模版";
+        }
+
+        @Override
+        public String getValue() {
+
             return "mapper_java";
         }
 
-        @Override
-        public String getValue() {
-
-            return "Mapper java 接口模版";
-        }
+		@Override
+		public String getPathTmeplate() {
+			return new StringBuilder(12).append("%s").append(File.separator).append("%s").append(File.separator).append("%sMapper.java").toString();
+		}
     },entity_java {
         @Override
         public String getDesc() {
+            return "Entity 模版";
+        }
+
+        @Override
+        public String getValue() {
+
             return "entity_java";
         }
 
-        @Override
-        public String getValue() {
-
-            return "Entity 模版";
-        }
+		@Override
+		public String getPathTmeplate() {
+			return new StringBuilder(12).append("%s").append(File.separator).append("%s").append(File.separator).append("%sEntity.java").toString();
+		}
     },service_java {
         @Override
         public String getDesc() {
-            return "service_java";
+            return "Service 模版";
         }
 
         @Override
         public String getValue() {
 
-            return "Service 模版";
+            return "service_java";
         }
+
+		@Override
+		public String getPathTmeplate() {
+			return new StringBuilder(12).append("%s").append(File.separator).append("%s").append(File.separator).append("%sLogicService.java").toString();
+		}
+    },
+    service_itf_java {
+        @Override
+        public String getDesc() {
+            return "Service 接口 模版";
+        }
+
+        @Override
+        public String getValue() {
+
+            return "service_itf_java";
+        }
+
+		@Override
+		public String getPathTmeplate() {
+			return new StringBuilder(12).append("%s").append(File.separator).append("%s").append(File.separator).append("I%sLogicService.java").toString();
+		}
+    },
+    controller_java {
+        @Override
+        public String getDesc() {
+            return "Controller 模版";
+        }
+
+        @Override
+        public String getValue() {
+
+            return "controller_java";
+        }
+
+		@Override
+		public String getPathTmeplate() {
+			return new StringBuilder(12).append("%s").append(File.separator).append("%s").append(File.separator).append("%sController.java").toString();
+		}
     };
 
     public abstract  String getValue();
 
     public  abstract  String getDesc();
-
+    
+    public abstract String getPathTmeplate();
+    
     private static final Map<String, TemplateType> map;
 
     static {
@@ -86,4 +143,5 @@ public enum TemplateType {
         if (StringUtils.isBlank(value))  return null;
         return map.get(value);
     }
+    
 }

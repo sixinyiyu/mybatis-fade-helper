@@ -2,7 +2,9 @@
  * <p>Copyright: Copyright (c) 2016</p>
  * <p>Company: fade </p>
  */
-package com.fade.mybatis.utils;/**
+package com.fade.mybatis.utils;
+
+/**
  * Created by Administrator on 2016/12/18.
  */
 
@@ -18,6 +20,12 @@ public final  class StringUtils {
 
     private StringUtils(){
 
+    }
+    
+    public static String concat (String base, String target, String with){
+    	if (isBlank(base)) return with + target;
+    	if (!base.endsWith(with)) base =base + with;
+    	return base + target;
     }
 
     /**

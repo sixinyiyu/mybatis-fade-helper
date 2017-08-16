@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="ZH">
+<head>
+<meta charset="UTF-8">
+<title>spring boot + mybatis + vue + elementui</title>
+<link rel="icon" href="/fade_favicon.ico" />
+<link href="https://cdn.bootcss.com/element-ui/1.4.2/theme-default/index.css" rel="stylesheet">
+<style type="text/css">
+@font-face {
+  font-family: 'iconfont';  /* project id 383025 */
+  src: url('//at.alicdn.com/t/font_383025_t8t3jce9n4eljtt9.eot');
+  src: url('//at.alicdn.com/t/font_383025_t8t3jce9n4eljtt9.eot?#iefix') format('embedded-opentype'),
+  url('//at.alicdn.com/t/font_383025_t8t3jce9n4eljtt9.woff') format('woff'),
+  url('//at.alicdn.com/t/font_383025_t8t3jce9n4eljtt9.ttf') format('truetype'),
+  url('//at.alicdn.com/t/font_383025_t8t3jce9n4eljtt9.svg#iconfont') format('svg');
+}
+
+[v-cloak] {
+  display: none;
+}
+
+.fade-logo {
+  padding-left:10px;
+}
+
+.iconfont{
+    font-family:"iconfont";
+    font-size:16px;
+    font-style:normal;
+    vertical-align: baseline;
+    display: inline-block;
+    margin-right: 10px;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-stroke-width: 0.2px;
+    -moz-osx-font-smoothing: grayscale; 
+    font-weight: 400;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+} 
+
+.header {
+  height: 80px;
+  background-color: #324057;
+  color: #fff;
+  top: 0;
+  left: 0;
+  width: 100%;
+  line-height: 80px;
+  z-index: 100;
+  display: table;
+  position: fixed;
+}
+.nav {
+  float: right;
+  line-height: 80px;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+.rightbar{
+  text-align: right;
+  padding-right: 20px;
+}
+.portrait{
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    margin: 10px 10px 0 -15px;
+    float: left;
+    line-height: 0;
+    background-color: #fff;
+}
+
+.main {
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+.sidebar-wrapper{
+    width: 230px;
+    position: fixed;
+    top: 82px;
+    bottom: 0;
+    left: 2px;
+    z-index: 100;
+    overflow: hidden;
+    transition: all .28s ease-out;
+}
+
+.el-menu {
+    min-height: 100%;
+}
+.sidebar-container {
+    transition: all .28s ease-out;
+    bottom: 0;
+    right: -17px;
+    overflow-y: auto;
+}
+
+.main-container{
+	margin-top: 82px;
+    min-height: 100%;
+    transition: all .28s ease-out;
+    margin-left: 230px;
+}
+
+.navbar-container {
+    height: 40px;
+    line-height: 50px;
+    border-radius: 0px !important;
+}
+</style>
+<script src="https://cdn.bootcss.com/vue/2.4.2/vue.js"></script>
+<script src="https://cdn.bootcss.com/element-ui/1.4.2/index.js"></script>
+<script src="https://cdn.bootcss.com/axios/0.16.2/axios.js"></script>
+</head>
+<body>
+	<div id="app" class="main">
+		<!-- 头部 -->
+		<header class="header">
+		    <div>
+		      <img src="" class="fade-logo"/>
+		      <div class="nav">
+		        <el-menu @select="handleSelect" class="el-menu-demo" default-active="0" mode="horizontal" theme="dark" v-cloak>
+		          <el-menu-item index="0">
+		              <span @click="showManagerTable">连接管理</span>
+		          </el-menu-item>
+		          <el-menu-item index="1">
+		              <span @click="createConnection">新建连接</span>
+		          </el-menu-item>
+		          <el-menu-item index="2">
+		              <span @click="showGenerate">代码生成</span>
+		          </el-menu-item>
+		          <el-menu-item index="3" class="el-col el-col-4">
+		              <div class="rightbar ">
+		                <span style="color: rgb(192, 204, 218); cursor: pointer;"><img src="https://octodex.github.com/images/dinotocat.png" class="portrait"> 卿全忠
+		                </span>
+		              </div>
+		          </el-menu-item>
+		        </el-menu>
+		        <div class="line"></div>
+		      </div>
+		    </div>
+		</header>
+		
+		<!-- 左侧连接 -->
+		<div  class="sidebar-wrapper sidebar-container">
+		    <el-menu  class="el-menu-vertical-demo" @open="handleOpen" theme="dark" default-active="1" >
+		      <el-submenu :index="item.id" v-for="item in connections" :key="item.id" v-cloak>
+		          <template slot="title"><i class="iconfont">&#xe6b8;</i>{{ item.connectionName }}</template>
+		          <el-menu-item :index="table.name" @click="chooseTable(table)" v-for="table in item.tables" :key="table.name"><i class="iconfont">&#xe600;</i>{{ table.name }}</el-menu-item>
+		      </el-submenu>
+		    </el-menu>
+		</div>
+			
+			
+		<div class="main-container"  v-cloak>
+			<div class="navbar-container"><span class="el-dialog__title">{{title}}</span></div>
+			
+			<!-- 管理连接列表 -->
+			<el-table :data="connections" :key='connectionTableKey'  style="width: 100%" v-if="connectionsTableVisible">
+			  <el-table-column type="expand">
+			      <template scope="scope">
+			        <el-form label-position="left" inline class="demo-table-expand">
+			          <el-form-item label="JDBCURL:">
+			            <span>{{ scope.row.fullURL }}</span>
+			          </el-form-item>
+			        </el-form>
+			      </template>
+		      </el-table-column>
+		      <el-table-column  label="连接名" align="center"  width="120">
+		      		<template scope="scope">
+	                  <span>{{scope.row.connectionName}}</span>
+	                </template>
+		      </el-table-column>
+		      <el-table-column  label="主机名或IP" align="center" width="160">
+		      		<template scope="scope">
+	                  <span>{{scope.row.host}}</span>
+	                </template>
+		      </el-table-column>
+		      <el-table-column  label="端口" align="center"  width="70">
+		      		<template scope="scope">
+	                  <span>{{scope.row.port}}</span>
+	                </template>
+		      </el-table-column>
+		      <el-table-column  label="数据库名" align="center"  width="120">
+		      		<template scope="scope">
+	                  <span>{{scope.row.databaseName}}</span>
+	                </template>
+		      </el-table-column>
+		      <el-table-column  label="库类型" align="center"  width="90">
+		      		<template scope="scope">
+	                  <span>{{scope.row.dbType}}</span>
+	                </template>
+		      </el-table-column>
+		      <el-table-column  label="用户名" align="center"  width="120">
+		      		<template scope="scope">
+	                  <span>{{scope.row.userName}}</span>
+	                </template>
+		      </el-table-column>
+		      <el-table-column  label="密码" align="center"  width="140">
+		      		<template scope="scope">
+	                  <span>{{scope.row.password}}</span>
+	                </template>
+		      </el-table-column>
+		      <el-table-column  label="编码" align="center"  width="90">
+		      		<template scope="scope">
+	                  <span>{{scope.row.encode}}</span>
+	                </template>
+		      </el-table-column>
+		      <el-table-column  label="操作" align="center" >
+	      		 <template scope="scope">
+				        <el-button  size="small" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+				        <el-button  size="small"  type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+			      </template>
+		      </el-table-column>
+		    </el-table>
+		    
+		    <!-- 表列名 -->
+		    <el-table :data="columns" :key="columnTableKey" style="width: 100%" v-if="tableColumnsVisible">
+		    	<el-table-column  label="栏目名" align="center" width="130">
+		    		<template scope="scope">
+	                  <span>{{scope.row.name}}</span>
+	                </template>
+		    	</el-table-column>
+		    	<el-table-column  label="类型" align="center" width="110">
+		    		<template scope="scope">
+	                  <span>{{scope.row.typeName}}</span>
+	                </template>
+		    	</el-table-column>
+		    	<el-table-column  label="备注" align="center">
+		    		<template scope="scope">
+	                  <span>{{scope.row.comment}}</span>
+	                </template>
+		    	</el-table-column>
+		    	<el-table-column  label="是否空" align="center" width="80">
+		    		<template scope="scope">
+	                  <span>{{scope.row.nullAble | parseBoolean}}</span>
+	                </template>
+		    	</el-table-column>
+		    	<el-table-column  label="主键" align="center" width="80">
+		    		<template scope="scope">
+	                  <span>{{scope.row.primary | parseBoolean}}</span>
+	                </template>
+		    	</el-table-column>
+		    	<el-table-column  label="默认值" align="center" width="120">
+		    		<template scope="scope">
+	                  <span>{{scope.row.defaultValue}}</span>
+	                </template>
+		    	</el-table-column>
+		    	<el-table-column  label="属性名" align="center" width="140">
+		    		<template scope="scope">
+	                  <span>{{scope.row.booleanPropertyName}}</span>
+	                </template>
+		    	</el-table-column>
+		    	<el-table-column  label="属性类型" align="center" width="100">
+		    		<template scope="scope">
+	                  <span>{{scope.row.propertyType}}</span>
+	                </template>
+		    	</el-table-column>
+		    </el-table>
+		    
+		    
+			
+			<!-- 填写自动生成需要的数据表单 -->
+			<el-col :offset="4" :span="20" v-if="configDialogFormVisible">
+					<el-form :model="configForm" ref="configForm" label-width="150px">
+						<el-form-item label="项目目录：" prop="projectFolder">
+							<!-- <input type="file" webkitdirectory directory/> -->
+							<el-col :span="12">
+								<el-input v-model="configForm.projectFolder" placeholder="F:\code"></el-input>
+							</el-col>
+						</el-form-item>
+						<el-form-item label="实体包路径：" prop="domainPackage">
+							<el-col :span="12">
+								<el-input v-model="configForm.domainPackage" placeholder="com/fade/entity"></el-input>
+							</el-col>
+						</el-form-item>
+						<el-form-item label="Mapper接口包路径：" prop="mapperPackage">
+							<el-col :span="12">
+								<el-input v-model="configForm.mapperPackage" placeholder="com/fade/dao"></el-input>
+							</el-col>
+						</el-form-item>
+						<el-form-item label="逻辑层接口路径：" prop="logicServiceItfPackage">
+							<el-col :span="12">
+								<el-input v-model="configForm.logicServiceItfPackage" placeholder="com/fade/logicService/itf"></el-input>
+							</el-col>
+						</el-form-item>
+						<el-form-item label="逻辑层服务路径：" prop="logicServicePackage">
+							<el-col :span="12">
+								<el-input v-model="configForm.logicServicePackage" placeholder="com/fade/logicService"></el-input>
+							</el-col>
+						</el-form-item>
+						<el-form-item label="代码编写者：">
+							<el-col :span="12">
+								<el-input v-model="configForm.author" placeholder="qingquanzhong@126.com"></el-input>
+							</el-col>
+						</el-form-item>
+						<el-row>
+							<el-col :span="8">
+								<el-form-item label="命名策略：" prop="nameStrategy">
+									<el-select v-model="configForm.nameStrategy" placeholder="请选择策略" @change="changeNameStrategy">
+								      <el-option v-for="item in nameStrategyOptions" :key="item.value" :label="item.label"  :value="item.value"></el-option>
+								    </el-select>
+								</el-form-item>
+							</el-col>
+							<el-col :span="6">
+								<el-form-item label="固定前缀/后缀：" v-if="showPrefix" prop="prefix">
+										<el-input v-model="configForm.prefix"></el-input>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<el-col :span="8">
+								<el-form-item label="是否生成注释：">
+									<el-checkbox v-model="configForm.generateComment">是</el-checkbox>
+								</el-form-item>
+							</el-col>
+							<el-col :span="8">
+								<el-form-item label="是否建造者模式：">
+									<el-checkbox v-model="configForm.useBuilderModel">是</el-checkbox>
+								</el-form-item>
+							</el-col>
+						</el-row>
+						<el-row>
+							<div v-show="tables.length > 0">
+							  <el-checkbox :indeterminate="isIndeterminate" v-model="checkAllTable" @change="handleCheckAllChange">全选(默认当前连接下所有表)</el-checkbox>
+							  <div style="margin: 15px 0;"></div>
+							  <el-checkbox-group v-model="checkedTable" @change="handleCheckedTablesChange">
+							    <el-checkbox v-for="table in tables" :label="table.name" :key="table.name">{{table.name}}表</el-checkbox>
+							  </el-checkbox-group>
+							</div>
+						</el-row>
+						<el-form-item>
+							<el-button type="success" @click="doGenerateCode" v-if="generateButVisible">执行生成</el-button>
+						    <el-button type="info" @click="doSet">清空重置</el-button>
+						</el-form-item>
+					</el-form>
+				</el-col>
+				
+				
+			<!-- 新建连接对话框 -->
+			<el-col :offset="3" :span="18" v-if="connectionDialogFormVisible">
+				<el-form ref="connectionForm" :model="connectionForm" label-width="120px" :rules="connectionFormRules">
+					  <el-form-item label="连接名：" prop="connectionName">
+					    <el-input v-model="connectionForm.connectionName"></el-input>
+					  </el-form-item>
+					  <el-form-item label="数据库类型：" prop="dbType">
+					    <el-select v-model="connectionForm.dbType" placeholder="请选择类型">
+					      <el-option label="Mysql" value="mysql"></el-option>
+					      <el-option label="Oracle" value="oracle"></el-option>
+					    </el-select>
+					  </el-form-item>
+					  <el-form-item label="主机名或IP：" prop="host">
+					    <el-input v-model="connectionForm.host"></el-input>
+					  </el-form-item>
+					  <el-form-item label="端口：" prop="port">
+					    <el-input v-model.number="connectionForm.port"></el-input>
+					  </el-form-item>
+					  <el-form-item label="数据库名：" prop="databaseName">
+					    <el-input v-model="connectionForm.databaseName"></el-input>
+					  </el-form-item>
+					  <el-form-item label="用户名：" prop="userName">
+					    <el-input v-model="connectionForm.userName"></el-input>
+					  </el-form-item>
+					  <el-form-item label="密码：" prop="password">
+					    <el-input v-model="connectionForm.password"></el-input>
+					  </el-form-item>
+					  <el-form-item label="编码：">
+					    <el-select v-model="connectionForm.encode" placeholder="请选择编码">
+					      <el-option label="UTF-8" value="UTF-8"></el-option>
+					      <el-option label="GBK" value="gbk"></el-option>
+					      <el-option label="GB2312" value="gb2312"></el-option>
+					    </el-select>
+					    
+					    <el-checkbox v-model="connectionForm.save">保存连接</el-checkbox>
+					  </el-form-item>
+					  <el-form-item>
+					  	<el-button type="success" @click="doTestConnection">测试连接</el-button>
+					    <el-button type="primary" @click="doCreateConnection">{{buttonTitle}}</el-button>
+					    <el-button @click="cancel">取消</el-button>
+					  </el-form-item>
+				</el-form>
+			</el-col>
+		</div>
+		
+	</div>
+</body>
+<script> 
+	Vue.config.debug = true;
+	axios.defaults.headers.post['Content-Type'] = 'application/json;charset=UTF-8';
+	var vm = new Vue({ 
+		el: '#app',
+		data: { 
+			connections: [],
+			connectionTableKey: 0,
+			columns: [],
+			columnTableKey: 1,
+			currentConnectionIndex: null,
+			title: '填写配置信息',
+			buttonTitle: '立即创建',
+			showPrefix: false,
+			configDialogFormVisible: false,
+			connectionDialogFormVisible: false,
+			connectionsTableVisible: true,
+			tableColumnsVisible: false,
+			generateButVisible: false,
+			checkAllTable: false,
+			isIndeterminate: false,
+			checkedTable: [],
+			tables: [],
+			connectionForm: {connectionName: null, dbType: 'mysql', host: null, port: null, databaseName: null, userName: null, password: null, save: true},
+			nameStrategyOptions: [{label: '原样', value: 'original'}, {label: '去掉前缀', value: 'remove_prefix'}, {label: '加固定前缀', value: 'plus_prefix'}, {label: '下划线转驼峰', value: 'underline_to_camel'}, {label: '去掉前缀转驼峰', value: 'remove_prefix_to_camel'}, {label: '加前缀转驼峰', value: 'plus_prefix_to_camel'}],
+			configForm: {nameStrategy: 'underline_to_camel', generateComment: true, useBuilderModel: true},
+			configFormRules: {
+				projectFolder: [
+					{ required: true, message: '请填写项目源码目录', trigger: 'blur' }
+				],
+				domainPackage: [
+					{ required: true, message: '请填写实体所在包', trigger: 'blur' }
+				],
+				mapperPackage: [
+					{ required: true, message: '请填写Dao所在包', trigger: 'blur' }
+				],
+				logicServiceItfPackage: [
+					{ required: true, message: '请填写逻辑服务接口所在包', trigger: 'blur' }
+				],
+				logicServicePackage: [
+					{ required: true, message: '请填写逻辑服务所在包', trigger: 'blur' }
+				],
+				nameStrategy: [
+					{ required: true, message: '请选择命名策略', trigger: 'change' }
+				]
+			},
+			connectionFormRules: {
+				dbType: [
+					{ required: true, message: '请选择数据库类型', trigger: 'change' }
+				],
+				host: [
+					{ required: true, message: '请填写主机名或IP', trigger: 'blur' }
+				],
+				port: [
+					{ type: 'number', required: true, message: '请填写端口', trigger: 'blur' }
+				],
+				databaseName: [
+					{ required: true, message: '请填写数据库名', trigger: 'blur' }
+				],
+				userName: [
+					{ required: true, message: '请填写用户名', trigger: 'blur' }
+				] 
+			}
+			
+		}, 
+		mounted: function (){ 
+			this.showManagerTable();
+			this.getDBConfig(); 
+		},
+	    filters: {
+	    	parseBoolean(k) {
+            return k ? '是': '否';
+          }
+        },
+		methods: { 
+			getDBConfig: function () {
+				let self = this;
+				axios.get('/dbConfig')
+				  .then(function (response) {
+					  console.log(response);
+					  if (response.data.code == 0) {
+						  self.connections = response.data.data;
+					  } else {
+						  self.connections = [];
+						  self.$notify({
+				            title: '信息',
+				            message: response.data.message,
+				            type: 'error'
+				          });
+					  }
+				 })
+				 .catch(function (error) {
+					self.$alert('异常信息', '异常', {
+			          confirmButtonText: '确定',
+			          callback: action => {
+			        	  self.$message({
+			              type: 'error',
+			              message: error
+			            });
+			          }
+			        });
+				 }); 
+			},
+			changeNameStrategy(value) {
+				if ('underline_to_camel' === value || 'original' === value) {
+					this.showPrefix = false;
+				} else {
+					this.showPrefix = true;
+				}
+			},
+			showManagerTable(){
+				this.configDialogFormVisible = false;
+				this.connectionDialogFormVisible = false;
+				this.tableColumnsVisible = false;
+				this.title = "连接列表";
+				this.connectionsTableVisible = true;
+			},
+			showGenerate() {
+				this.connectionDialogFormVisible = false;
+				this.tableColumnsVisible = false;
+				this.title = "填写配置信息";
+				this.connectionsTableVisible = false;
+				this.configDialogFormVisible = true;
+			},
+			handleEdit(index, item){
+				this.connectionForm = item;
+				this.connectionForm.save = true;
+				this.configDialogFormVisible = false;
+				this.tableColumnsVisible = false;
+				this.title = "修改连接";
+				this.buttonTitle = '提交修改';
+				this.connectionsTableVisible = false;
+				this.connectionDialogFormVisible = true;
+			},
+			handleDelete(index, item) {
+				const self = this;
+				self.$confirm('确认删除该连接吗?', '提示', {
+			          type: 'warning'
+			        }).then(() => {
+			          axios.delete('/dbConfig/' + item.id)
+					  .then(function (response) {
+						  if (response.data.code == 0) {
+							  self.connections.splice(index, 1);
+							  self.$notify({
+				                title: '成功',
+				                message: '删除成功',
+				                type: 'success'
+				              });
+						  } else {
+							  self.$notify({
+					            title: '信息',
+					            message: response.data.message,
+					            type: 'error'
+					          });
+						  }
+					 })
+					 .catch(function (error) {
+						self.$alert('异常信息', '异常', {
+				          confirmButtonText: '确定',
+				          callback: action => {
+				        	  self.$message({
+				              type: 'error',
+				              message: error
+				            });
+				          }
+				        });
+					 }); 
+			        }).catch(() => {
+
+			        });
+			},
+			createConnection () {
+				this.connectionForm = {dbType: 'mysql', encode: 'UTF-8', save: false};
+				this.configDialogFormVisible = false;
+				this.title = "新建连接";
+				this.buttonTitle = '立即创建';
+				this.tableColumnsVisible = false;
+				this.connectionsTableVisible = false;
+				this.connectionDialogFormVisible = true;
+			},
+			doTestConnection() {
+				const self = this;
+				this.$refs.connectionForm.validate((valid) => {
+		          if (valid) {
+		        	 axios.post('/checkConnection', self.connectionForm
+		        	 ).then(function (response) {
+		        		if (response.data.code == 0) {
+		        			self.$notify({
+					          title: '成功',
+					          message: response.data.message,
+					          type: 'success'
+					        });
+		        		} else {
+		        			self.$notify({
+					          title: '失败',
+					          message: response.data.message,
+					          type: 'error'
+					        });
+		        		}
+					 })
+					 .catch(function (error) {
+						self.$alert('异常信息', '异常', {
+				          confirmButtonText: '确定',
+				          callback: action => {
+				        	self.$message({
+				              type: 'error',
+				              message: error.message
+				            });
+				          }
+				        });
+					 }); 
+		          } else {
+		            return false;
+		          }
+		        });
+			},
+			doCreateConnection() {
+				const self = this;
+				this.$refs.connectionForm.validate((valid) => {
+		          if (valid) {
+		        	 axios.post('/dbConfig', self.connectionForm).then(function (response) {
+		        		self.getDBConfig();
+		        		self.showConfig();
+		        		if (response.data.code == 0) {
+		        			self.$notify({
+					          title: '成功',
+					          message: response.data.message,
+					          type: 'success'
+					        });
+		        		} else {
+		        			self.$notify({
+					          title: '失败',
+					          message: response.data.message,
+					          type: 'error'
+					        });
+		        		}
+					 })
+					 .catch(function (error) {
+						self.$alert('异常信息', '异常', {
+				          confirmButtonText: '确定',
+				          callback: action => {
+				        	self.$message({
+				              type: 'error',
+				              message: error.message
+				            });
+				          }
+				        });
+					 }); 
+		          } else {
+		            return false;
+		          }
+		        });
+			},
+			getTables() {
+				const self = this;
+				axios.get('/list/tables').then(function (response) {
+	        		if (response.data.code == 0) {
+	        			const tables = response.data.data;
+	        			self.setConnectionTables(tables);
+	        		} else {
+	        			self.$notify({
+				          title: '失败',
+				          message: response.data.message,
+				          type: 'error'
+				        });
+	        		}
+				 })
+				 .catch(function (error) {
+					self.$alert('异常信息', '异常', {
+			          confirmButtonText: '确定',
+			          callback: action => {
+			        	self.$message({
+			              type: 'error',
+			              message: error.message
+			            });
+			          }
+			        });
+				 }); 
+			},
+			showColumns(columns) {
+				this.title = "表栏目信息";
+				this.connectionsTableVisible = false;
+				this.connectionDialogFormVisible = false;
+				this.columns = columns;
+				this.tableColumnsVisible = true;
+			},
+			chooseTable(table) {
+			   const self = this;
+			   axios.get('/'+ table.name +'/column').then(function (response) {
+	        		if (response.data.code == 0) {
+	        			self.showColumns(response.data.data);
+	        		} else {
+	        			self.showColumns([]);
+	        			self.$notify({
+				          title: '失败',
+				          message: response.data.message,
+				          type: 'error'
+				        });
+	        		}
+				 })
+				 .catch(function (error) {
+					self.showColumns([]);
+					self.$alert('异常信息', '异常', {
+			          confirmButtonText: '确定',
+			          callback: action => {
+			        	self.$message({
+			              type: 'error',
+			              message: error.message
+			            });
+			          }
+			        });
+				 }); 
+			},
+			setConnectionTables(tables) {
+				let connection = this.connections[this.currentConnectionIndex];
+				connection.tables = tables;
+				this.tables = tables;
+				this.$set(this.connections,this.currentConnectionIndex, connection);
+			},
+			showConfig(){
+				this.connectionDialogFormVisible = false;
+				this.title = "填写配置信息";
+				this.connectionsTableVisible = false;
+				this.configDialogFormVisible = true;
+			},
+			cancel() {
+				this.showConfig();
+			},
+			handleOpen(key, keyPath) {
+	          let index  = this.connections.findIndex(one => {return one.id === key});
+	          if (index > -1) {
+	        	  let connection = this.connections[index];
+	        	  this.currentConnectionIndex = index;
+	        	  if (!connection.tables) {
+	        		  const self = this;
+	        		  axios.post('/switchDb', connection).then(function (response) {
+			        		if (response.data.code == 0) {
+			        			self.getTables();
+				        		self.generateButVisible = true;
+			        			self.$notify({
+						          title: '成功',
+						          message: '切换数据源成功',
+						          type: 'success'
+						        });
+			        		} else {
+			        			self.generateButVisible = false;
+			        			self.$notify({
+						          title: '失败',
+						          message: response.data.message,
+						          type: 'error'
+						        });
+			        		}
+						 })
+						 .catch(function (error) {
+							self.generateButVisible = false;
+							self.$alert('异常信息', '异常', {
+					          confirmButtonText: '确定',
+					          callback: action => {
+					        	self.$message({
+					              type: 'error',
+					              message: error.message
+					            });
+					          }
+					        });
+						 }); 
+	        	  }
+	          }
+	        },
+	        doSet() {
+	        	this.configForm =  {projectFolder: null, domainPackage: null, mapperPackage: null, logicServiceItfPackage: null, logicServicePackage: null, prefix: null, nameStrategy: 'underline_to_camel', generateComment: true, useBuilderModel: true};
+	        },
+	        doGenerateCode() {
+	        	const self = this;
+	        	this.$refs.configForm.validate((valid) => {
+	        		if (valid) {
+	        			let data = {author: self.configForm.author, useBuilderModel: self.configForm.useBuilderModel, projectFolder: self.configForm.projectFolder, domainPackage: self.configForm.domainPackage, mapperPackage: self.configForm.mapperPackage, logicServiceItfPackage: self.configForm.logicServiceItfPackage, logicServicePackage: self.configForm.logicServicePackage, nameStrategy: self.configForm.nameStrategy, prefix: self.configForm.prefix};
+	        			data.tableNames = (self.checkedTable.length == 0 || self.checkAllTable) ? [] : self.checkedTable;
+	        			axios.post('/generateCode', data).then(function (response) {
+	        				if (response.data.code == 0) {
+	        					self.$notify({
+							          title: '成功',
+							          message: response.data.data,
+							          type: 'success'
+							        });
+	        				} else {
+	        					self.$notify({
+						          title: '失败',
+						          message: response.data.message,
+						          type: 'error'
+						        });
+	        				}
+	        			}).catch(function (error) {
+							self.$alert('异常信息', '异常', {
+					          confirmButtonText: '确定',
+					          callback: action => {
+					        	self.$message({
+					              type: 'error',
+					              message: error.message
+					            });
+					          }
+					        });
+						 }); 
+	        		}else {
+			            return false;
+		            }
+	        	});
+	        },
+	        handleCheckAllChange(event) {
+	        	this.checkedTable = event.target.checked ? this.tables.map(one => {return one.name}) : [];
+	            this.isIndeterminate = false;
+	        },
+	        handleCheckedTablesChange(value) {
+	        	let checkedCount = value.length;
+	            this.checkAllTable = checkedCount === this.tables.length;
+	            this.isIndeterminate = checkedCount > 0 && checkedCount < this.tables.length;
+	        },
+			handleSelect: function (key, keyPath) {
+		    },
+		    selectConnection(index) {
+		    }
+		} 
+	}); 
+</script>
+</html>

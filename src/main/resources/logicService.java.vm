@@ -1,0 +1,107 @@
+/**
+ * 
+ */
+package ${package.LogicService};
+
+import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
+
+import com.google.common.collect.Lists;
+import ${package.Entity}.${entityName};
+
+/**
+ * Description: ${table.comment} 逻辑服务类<br/>
+ * 不做业务校验，参数校验统一放到前置的Service中
+ * @author ${author}
+ * @version 1.0
+ * @date: ${date}
+ * @since JDK 1.8
+ */
+@Service(value = "logic${table.entityName}Service")
+public class ${table.entityName}LogicService implements I${table.entityName}LogicService {
+
+	@Autowired
+	private ${table.entityName}Mapper ${table.letterEntityName}Mapper;
+
+	/**可选插入返回主键*/
+	@Override
+	public ${table.keyField.propertyType} insert${table.entityName}(${entityName} entity) {
+	   ${table.keyField.propertyType} ${table.keyField.propertyName} = null;
+	   try {
+			${table.name}Mapper.insertSelective(entry);
+			${table.keyField.propertyName} = entry.get${table.keyField.capitalSetPropertyName}();
+		} catch (Exception e) {
+			throw new DaoException("数据库异常", e);
+		}
+		return ${table.keyField.propertyName};   
+	}
+	
+	/**批量插入*/
+	@Override
+	public void insert${table.entityName}s(List<${entityName}> records) {
+	   try {
+	   		${table.name}Mapper.insertRecords(records);
+	   } catch(Exception e) {
+	   		throw new DaoException("数据库异常", e);
+	   }
+	}
+
+	/**条件查询*/
+	@Override
+	public List<${entityName}> queryByCond(${entityName} entity) {
+		try {
+			return ${table.name}Mapper.queryByCond(entity);
+		} catch(Exception e) {
+			throw new DaoException("数据库异常", e);
+		}
+	}
+	
+	/**分页查询 若记录为空则对象中的记录数为空列表*/
+	@Override
+	public Page<${entityName}> pageQueryByCond(${entityName} entity, int pageNum, int pageSize) {
+		PageBo<${entityName}> result = null;
+		try {
+			Page<${entityName}> page = PageHelper.startPage(pageNum, pageSize)
+					.doSelectPage(() -> ${table.name}Mapper.queryByCond(entity));
+			result = new Page<>(pageSize, pageNum, page.getResult(), Integer.getInteger(page.getTotal() + ""));
+		} catch (Exception e) {
+			throw new DaoException("数据库异常", e);
+		}
+		return result == null ?  new PageBo(pageSize, pageNum, Lists.newArrayListWithCapacity(1) , 0) : result;
+	}
+	
+	/**主键查询 可能返回Null*/
+	@Override
+	public ${entityName} query${table.entityName}By${table.keyField.capitalPropertyName} (${table.keyField.propertyType} ${table.keyField.propertyName}) {
+		try {
+			return ${table.name}Mapper.queryBy${table.keyField.capitalPropertyName}(${table.keyField.propertyName});
+		} catch(Exception e) {
+			throw new DaoException("数据库异常", e);
+		}
+	}
+	
+	/**主键更新*/
+	@Override
+	public boolean update${table.entityName}By${table.keyField.capitalPropertyName} (${table.getCapitalName()} entity) {
+		try {
+			return ${table.name}Mapper.update${table.entityName}By${table.keyField.capitalPropertyName}(entity) > 0;
+		} catch(Exception e) {
+			throw new DaoException("数据库异常", e);
+		}
+	}
+	
+	/**主键删除*/
+	@Override
+	public boolean delete${table.entityName}By${table.keyField.capitalPropertyName} (${table.keyField.propertyType} ${table.keyField.propertyName}) {
+		try {
+			return ${table.name}Mapper.delete${table.entityName}By${table.keyField.capitalPropertyName}(${table.keyField.propertyName}) > 0;
+		} catch(Exception e) {
+			throw new DaoException("数据库异常", e);
+		}
+	}
+	
+}

@@ -1,0 +1,40 @@
+/**
+ * 
+ */
+package ${package.Mapper};
+
+import java.util.List;
+
+import org.apache.ibatis.annotations.Param;
+
+import ${package.Entity}.${entityName};
+
+/**
+ * Description: ${table.comment} Dao<br/>
+ *
+ * @author ${author}
+ * @version 1.0
+ * @date: ${date}
+ * @since JDK 1.8
+ */
+public interface ${table.entityName}Mapper {
+
+	/**可选插入返回主键*/
+	${table.keyField.propertyType} insertSelective(${entityName} entity);
+	
+	/**批量插入返回影响记录数*/
+	int insertRecords(@Param("records") List<${entityName}> records);
+
+	/**条件查询*/
+	List<${entityName}> queryByCond(${entityName} entity);
+	
+	/**主键查询*/
+	${entityName} queryBy${table.keyField.capitalPropertyName} (@Param("${table.keyField.propertyName}") ${table.keyField.propertyType} ${table.keyField.propertyName});
+	
+	/**主键更新*/
+	int update${table.entityName}By${table.keyField.capitalPropertyName} (${entityName} entity);
+	
+	/**主键删除*/
+	int delete${table.entityName}By${table.keyField.capitalPropertyName} (@Param("${table.keyField.propertyName}") ${table.keyField.propertyType} ${table.keyField.propertyName});
+	
+}

@@ -33,6 +33,9 @@ public class DataSourceConfig {
 
     /**驱动名*/
     private String driverClass;
+    
+    /**数据库名*/
+    private String dbName;
 
     /**参数校验*/
     public void argsCheck() {
@@ -92,5 +95,15 @@ public class DataSourceConfig {
     public void setDriverClass(String driverClass) {
         this.driverClass = driverClass;
     }
+
+
+	public String getDbName() {
+		return dbName;
+	}
+
+
+	public void setDbName(String dbName) {
+		this.dbName = dbName;
+	}
 
 }

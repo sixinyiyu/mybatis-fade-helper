@@ -1,0 +1,75 @@
+/**
+ * <p>Copyright: Copyright (c) 2017</p>
+ * <p>Company: fade </p>
+ */
+package ${package.Entity};
+
+import java.io.Serializable
+#if(${table.hasDate})
+import java.util.Date;
+#end
+
+/**
+ * Description: ${table.comment}<br/>
+ *
+ * @author ${author}
+ * @version 1.0
+ * @date: ${date}
+ * @since JDK 1.8
+ */
+public class ${entityName} implements Serializable {
+
+    private static final long serialVersionUID = 1L;
+
+## 设置属性
+#foreach($field in ${table.fields})
+	/**${field.comment}*/
+	private ${field.propertyType} ${field.propertyName};
+#end
+
+## set/get方法
+#foreach($field in ${table.fields})
+## 针对is开头Boolean属性处理
+#if(${field.propertyType.equals("Boolean")})
+#set($sName = ${field.booleanSetPropertyName})
+#set($gName = ${field.booleanPropertyName})
+#else
+#set($sName = ${field.capitalSetPropertyName})
+#set($gName = ${field.capitalGetPropertyName})
+#end
+
+	/**{@linkplain #${field.propertyName}}*/
+	#if(${simpleBuilderModel})
+private ${entityName} ${sName}(${field.propertyType} ${field.propertyName}) {
+		this.${field.propertyName} = ${field.propertyName};
+		return this;
+	}
+	#else
+	private void ${sName}(${field.propertyType} ${field.propertyName}) {
+		this.${field.propertyName} = ${field.propertyName};
+	}
+	#end
+	
+	/**{@linkplain #${field.propertyName}}*/
+	private ${field.propertyType} ${gName}() {
+		return this.${field.propertyName};
+	}
+#end
+
+## toString方法
+	@Override
+	private String toString() {
+		final StringBuilder sb = new StringBuilder("${entityName} [");
+#foreach($field in ${table.fields})
+  #if($velocityCount == 1)
+	    sb.append("${field.propertyName}=");
+  #else
+	    sb.append(",${field.propertyName}=");
+  #end
+	    sb.append(${field.propertyName}).append(', ');
+#end
+        sb.append(']');
+        return sb.toString();
+	}
+
+}

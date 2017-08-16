@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="${package.Mapper}.${table.entityName}Mapper">
+#if(${enableCache})
+	<!--  EhcacheCache -->
+	<cache type="org.mybatis.caches.ehcache.LoggingEhcache"/>
+#end
+
+	<resultMap id="BaseResultMap" type="${package.Entity}.${entityName}">
+#foreach($field in ${table.fields})
+#if(${field.primary})
+		<id column="${field.name}" property="${field.propertyName}" />
+#else
+		<result column="${field.name}" property="${field.propertyName}" />
+#end
+#end
+	</resultMap>
+
+	<sql id="table-name">${table.name}</sql>
+
+	<sql id="all-column">##
+#foreach($field in ${table.fields})
+#if($velocityCount != 1)
+ ,${field.name}##
+#else
+${field.name}##
+#end
+#end
+	</sql>
+	
+#macro(parseStringType $filed)
+	#if(${field.propertyType.equals("String")})
+		<if test="${field.propertyName} != null and ${field.propertyName} != ''">
+	#else
+	<if test="${field.propertyName} != null">
+	#end
+#end
+	
+	<!-- Selective Insert-->
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="${table.keyField.propertyName}" parameterType="${package.Entity}.${table.entityName}">
+		insert into <include refid="table-name"/>
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+#foreach($field in ${table.fields})
+#parseStringType($field)
+  #if($velocityCount != $!{table.fields.size()})
+	        ${field.name},
+  #else
+	        ${field.name}
+  #end
+	        </if>
+#end
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides="," >
+#foreach($field in ${table.fields})
+ #parseStringType($field)
+  #if($velocityCount != $!{table.fields.size()})
+	        #{${field.propertyName}},
+  #else
+            #{${field.propertyName}}
+  #end
+	        </if>
+  #end
+		</trim>
+	</insert>
+
+	<!-- Batch Selective -->
+	<insert id="insertRecords" parameterType="java.util.List">
+		insert into <include refid="table-name"/>
+		<trim prefix="(" suffix=")values">
+		 	<include refid="all-column"/>
+		</trim>
+		<foreach collection="records" item="record"  separator=",">
+		  (##
+#foreach($field in ${table.fields})
+	#if($velocityCount != $!{table.fields.size()})
+	#{${field.propertyName}},
+	#else
+	#{${field.propertyName}}
+	#end
+#end
+	   )
+		</foreach>
+	</insert>
+	
+	<!-- Query By Cond -->
+	<select id="queryByCond" resultMap="BaseResultMap" parameterType="${package.Entity}.${entityName}">
+		select <include refid="all-column" /> from <include refid="table-name"/> 
+		where 1=1
+#foreach($field in ${table.fields})
+  #parseStringType($field)
+	      and ${field.name} = #{${field.propertyName}}
+	    </if>
+#end
+	</select>
+	
+	<!-- Query By Primary Key -->
+	<select id="queryBy${table.keyField.capitalPropertyName}" resultMap="BaseResultMap">
+		select
+		<include refid="all-column" />
+		from <include refid="table-name"/> where ${table.keyField.name} = #{${table.keyField.propertyName}}
+	</select>
+	
+	<!-- Update By Primary Key -->
+	<update id="update${entity}By${table.keyField.capitalPropertyName}" parameterType="${package.Entity}.${entityName}">
+		update <include refid="table-name" />
+		<set>
+#foreach($field in ${table.fields})
+#parseStringType($field)
+#if($velocityCount != $!{table.fields.size()})
+	        ${field.name} = #{${field.propertyName}},
+#else
+            ${field.name} = #{${field.propertyName}}
+#end
+			</if>
+			#end
+		</set>
+		<where>${table.keyField.name} = #{${table.keyField.propertyName}}</where>
+	</update>
+	
+	<!-- Delete By primary Keys -->
+	<delete id="delete${entity}By${table.keyField.capitalPropertyName}">
+		delete from <include refid="table-name" /> 
+		<where>${table.keyField.name} = #{${table.keyField.propertyName}}</where>
+	</delete>
+	
+</mapper>

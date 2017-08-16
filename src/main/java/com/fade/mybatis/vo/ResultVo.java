@@ -12,7 +12,7 @@ import com.fade.mybatis.utils.StringUtils;
 * @date: 2016-12-20 13:01:14
 * @since JDK 1.8
 */
-public class Result<T> implements Serializable {
+public class ResultVo<T> implements Serializable {
 
 	private static final long serialVersionUID = 9130894805115698656L;
 	
@@ -29,7 +29,7 @@ public class Result<T> implements Serializable {
 		return code;
 	}
 
-	public Result<T> setCode(Integer code) {
+	public ResultVo<T> setCode(Integer code) {
 		this.code = code;
 		return this;
 	}
@@ -38,7 +38,7 @@ public class Result<T> implements Serializable {
 		return data;
 	}
 
-	public Result<T> setData(T data) {
+	public ResultVo<T> setData(T data) {
 		this.data = data;
 		return this;
 	}
@@ -47,19 +47,19 @@ public class Result<T> implements Serializable {
 		return message;
 	}
 
-	public Result<T> setMessage(String message) {
+	public ResultVo<T> setMessage(String message) {
 		this.message = message;
 		return this;
 	}
 
-	public Result<T> setSuccessValue(T data) {
+	public ResultVo<T> setSuccessValue(T data) {
 		this.message = "成功";
 		this.code = 0;
 		this.data = data;
 		return this;
 	}
 	
-	public Result<T> setFaildMessage(String message) {
+	public ResultVo<T> setFaildMessage(String message) {
 		this.code = -1;
 		this.message = StringUtils.isBlank(message) ? "操作失败" : message;
 		return this;
