@@ -18,11 +18,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fade.mybatis.config.DataSourceConfig;
 import com.fade.mybatis.config.GeneratorConfig;
 import com.fade.mybatis.config.TemplateConfig;
-import com.fade.mybatis.config.builder.DataSourceConfigBuilder;
-import com.fade.mybatis.enums.DbType;
 import com.fade.mybatis.enums.NamingStrategyType;
 import com.fade.mybatis.enums.TemplateType;
 import com.fade.mybatis.model.TableField;
@@ -31,7 +28,6 @@ import com.fade.mybatis.service.in.DbServiceHelper;
 import com.fade.mybatis.service.in.VelocityTemplate;
 import com.fade.mybatis.utils.CollectionUtil;
 import com.fade.mybatis.utils.StringUtils;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
 /**
@@ -60,7 +56,7 @@ public class DataSourceService {
 	@Autowired
     private VelocityTemplate  velocityTemplate;
 
-    public static void main(String[] args) {
+/*    public static void main(String[] args) {
         DataSourceService service = new DataSourceService();
         DataSourceConfig dataSourceConfig = DataSourceConfigBuilder.newInstance().setDbType(DbType.mysql).setHost("127.0.0.1").setPort(3306).setUserName("root").setPassword("fade90,").setDatabaseName("apps").builder();
         service.dbServiceHelper = new DbServiceHelper(dataSourceConfig);
@@ -77,7 +73,7 @@ public class DataSourceService {
         	service.generateCode(generatorConfig, Lists.newArrayList(table));
         }
     }
-     
+*/     
     /*更新模板，没有就新增，有就覆盖*/
     public void updateTemplate() {
     	
