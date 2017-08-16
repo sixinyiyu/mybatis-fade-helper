@@ -37,7 +37,7 @@ Mybatis配置：
 
 mvn install -Dmaven.test.skip=true
 
-java -Dserver.port=8080 -jar boot.jar -jar mybatis-generator-helper-0.0.1-SNAPSHOT.jar
+java  -jar boot.jar -jar mybatis-generator-helper-0.0.1-SNAPSHOT.jar --server.port=9090
 
 1) 首先新建数据库连接(连接可以选择保存本地)
 2) 指定初始化加载某连接
