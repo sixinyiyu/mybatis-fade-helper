@@ -21,6 +21,9 @@ public interface I${table.entityName}LogicService {
 	
 	/**批量插入*/
 	void insert${table.entityName}s(List<${entityName}> records);
+	
+	/**条件查询一条记录*/
+	${entityName} query${table.entityName}LimitOne(${entityName} entity);
 
 	/**条件查询*/
 	List<${entityName}> queryByCond(${entityName} entity);

@@ -24,6 +24,8 @@ public interface ${table.entityName}Mapper {
 	
 	/**批量插入返回影响记录数*/
 	int insertRecords(@Param("records") List<${entityName}> records);
+	
+	${entityName} queryLimitOne(${entityName} entity);
 
 	/**条件查询*/
 	List<${entityName}> queryByCond(${entityName} entity);

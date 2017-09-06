@@ -11,6 +11,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 
 import com.google.common.collect.Lists;
+import ${package.Mapper}.${table.entityName}Mapper;
 import ${package.Entity}.${entityName};
 
 /**
@@ -33,7 +34,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	   ${table.keyField.propertyType} ${table.keyField.propertyName} = null;
 	   try {
 			${table.letterEntityName}Mapper.insertSelective(entry);
-			${table.keyField.propertyName} = entry.get${table.keyField.capitalSetPropertyName}();
+			${table.keyField.propertyName} = entry.get${table.keyField.capitalPropertyName}();
 		} catch (Exception e) {
 			throw new DaoException("数据库异常", e);
 		}
@@ -50,6 +51,16 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	   }
 	}
 
+	/**条件查询返回匹配的第一条记录*/
+	@Override
+	public ${entityName} query${table.entityName}LimitOne(${entityName} entity) {
+		try {
+			return ${table.letterEntityName}Mapper.queryLimitOne(entity);
+		} catch(Exception e) {
+			throw new DaoException("数据库异常", e);
+		}
+	}
+
 	/**条件查询*/
 	@Override
 	public List<${entityName}> queryByCond(${entityName} entity) {
@@ -62,16 +73,16 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	
 	/**分页查询 若记录为空则对象中的记录数为空列表*/
 	@Override
-	public Page<${entityName}> pageQueryByCond(${entityName} entity, int pageNum, int pageSize) {
-		PageBo<${entityName}> result = null;
+	public PageDto<${entityName}> pageQueryByCond(${entityName} entity, int pageNum, int pageSize) {
+		PageDto<${entityName}> result = null;
 		try {
 			Page<${entityName}> page = PageHelper.startPage(pageNum, pageSize)
 					.doSelectPage(() -> ${table.letterEntityName}Mapper.queryByCond(entity));
-			result = new Page<>(pageSize, pageNum, page.getResult(), Integer.getInteger(page.getTotal() + ""));
+			result = new PageDto<>(pageSize, pageNum, page.getResult(), Integer.getInteger(page.getTotal() + ""));
 		} catch (Exception e) {
 			throw new DaoException("数据库异常", e);
 		}
-		return result == null ?  new PageBo(pageSize, pageNum, Lists.newArrayListWithCapacity(1) , 0) : result;
+		return result == null ?  new PageDto<>(pageSize, pageNum, Lists.newArrayListWithCapacity(1) , 0) : result;
 	}
 	
 	/**主键查询 可能返回Null*/
@@ -86,7 +97,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	
 	/**主键更新*/
 	@Override
-	public boolean update${table.entityName}By${table.keyField.capitalPropertyName} (${table.getCapitalName()} entity) {
+	public boolean update${table.entityName}By${table.keyField.capitalPropertyName} (${entityName} entity) {
 		try {
 			return ${table.letterEntityName}Mapper.update${table.entityName}By${table.keyField.capitalPropertyName}(entity) > 0;
 		} catch(Exception e) {

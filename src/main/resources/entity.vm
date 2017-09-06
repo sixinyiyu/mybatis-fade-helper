@@ -4,7 +4,7 @@
  */
 package ${package.Entity};
 
-import java.io.Serializable
+import java.io.Serializable;
 #if(${table.hasDate})
 import java.util.Date;
 #end
@@ -25,6 +25,7 @@ public class ${entityName} implements Serializable {
 #foreach($field in ${table.fields})
 	/**${field.comment}*/
 	private ${field.propertyType} ${field.propertyName};
+	
 #end
 
 ## set/get方法
@@ -40,25 +41,25 @@ public class ${entityName} implements Serializable {
 
 	/**{@linkplain #${field.propertyName}}*/
 	#if(${simpleBuilderModel})
-private ${entityName} ${sName}(${field.propertyType} ${field.propertyName}) {
+public ${entityName} ${sName}(${field.propertyType} ${field.propertyName}) {
 		this.${field.propertyName} = ${field.propertyName};
 		return this;
 	}
 	#else
-	private void ${sName}(${field.propertyType} ${field.propertyName}) {
+	public void ${sName}(${field.propertyType} ${field.propertyName}) {
 		this.${field.propertyName} = ${field.propertyName};
 	}
 	#end
 	
 	/**{@linkplain #${field.propertyName}}*/
-	private ${field.propertyType} ${gName}() {
+	public ${field.propertyType} ${gName}() {
 		return this.${field.propertyName};
 	}
 #end
 
 ## toString方法
 	@Override
-	private String toString() {
+	public String toString() {
 		final StringBuilder sb = new StringBuilder("${entityName} [");
 #foreach($field in ${table.fields})
   #if($velocityCount == 1)
@@ -66,7 +67,7 @@ private ${entityName} ${sName}(${field.propertyType} ${field.propertyName}) {
   #else
 	    sb.append(",${field.propertyName}=");
   #end
-	    sb.append(${field.propertyName}).append(', ');
+	    sb.append(${field.propertyName}).append(",");
 #end
         sb.append(']');
         return sb.toString();

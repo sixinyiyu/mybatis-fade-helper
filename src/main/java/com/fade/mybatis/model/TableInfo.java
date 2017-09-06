@@ -88,6 +88,14 @@ public class TableInfo implements Serializable{
 		if (null != fields) keyField = fields.stream().filter(one -> one.getPrimary()).findFirst().orElse(new TableField());
 		return keyField;
 	}
+	
+	/**是否包含日期类型*/
+	public boolean getHasDate() {
+		if (null != fields) {
+			return fields.stream().filter(one ->  one.getPropertyType().equals("Date")).findAny().isPresent();
+		}
+		return false;
+	}
 
 	@Override
 	public String toString() {
