@@ -154,9 +154,9 @@ public class DataSourceService {
     	tables.forEach(table -> {
     		/**获得列*/
     		table.setFields(dbServiceHelper.getTableFields(table.getName(), generatorConfig.getNameStrategy(), generatorConfig.getPrefix()));
-    		table.setEntityName(NamingStrategyType.converNaming(table.getCapitalName(), generatorConfig.getNameStrategy(), generatorConfig.getPrefix()));
+    		table.setEntityName(NamingStrategyType.toCapital(NamingStrategyType.converNaming(table.getCapitalName(), generatorConfig.getNameStrategy(), generatorConfig.getPrefix())));
     		VelocityContext ctx = new VelocityContext();
-    		
+    		System.out.println(table.getCapitalName());
     		String entityName = table.getEntityName();
     		ctx.put("author",author);
         	ctx.put("date", date);
@@ -165,11 +165,11 @@ public class DataSourceService {
         	ctx.put("entityName", table.getEntityName() + "Entity");
         	
         	/**输出文件路径信息*/
-    		ctx.put("entityOutput", String.format(TemplateType.entity_java.getPathTmeplate(), baseDir , generatorConfig.getDomainPackage(), entityName));
-    		ctx.put("xmlOutput", String.format(TemplateType.mapper_xml.getPathTmeplate(), baseDir, generatorConfig.getXmlMapperPackage(), entityName));
-    		ctx.put("mapperOutput", String.format(TemplateType.mapper_java.getPathTmeplate(), baseDir, generatorConfig.getMapperPackage(), entityName));
-    		ctx.put("serviceItfOutput", String.format(TemplateType.service_itf_java.getPathTmeplate(), baseDir, generatorConfig.getLogicServiceItfPackage(), entityName));
-    		ctx.put("serviceOutput", String.format(TemplateType.service_java.getPathTmeplate(), baseDir, generatorConfig.getLogicServicePackage(), entityName));
+    		ctx.put("entityOutput", String.format(TemplateType.entity_java.getPathTmeplate(), baseDir , generatorConfig.getDomainPackage().replace(".", "/"), entityName));
+    		ctx.put("xmlOutput", String.format(TemplateType.mapper_xml.getPathTmeplate(), baseDir, generatorConfig.getXmlMapperPackage().replace(".", "/"), entityName));
+    		ctx.put("mapperOutput", String.format(TemplateType.mapper_java.getPathTmeplate(), baseDir, generatorConfig.getMapperPackage().replace(".", "/"), entityName));
+    		ctx.put("serviceItfOutput", String.format(TemplateType.service_itf_java.getPathTmeplate(), baseDir, generatorConfig.getLogicServiceItfPackage().replace(".", "/"), entityName));
+    		ctx.put("serviceOutput", String.format(TemplateType.service_java.getPathTmeplate(), baseDir, generatorConfig.getLogicServicePackage().replace(".", "/"), entityName));
     		
     		/**表结构信息*/
         	ctx.put("table", table);

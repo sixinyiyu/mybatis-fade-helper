@@ -211,7 +211,7 @@ public class HomeController {
     				   .setMapperPackage(generatorVo.getMapperPackage())
     				   .setLogicServiceItfPackage(generatorVo.getLogicServiceItfPackage())
     				   .setLogicServicePackage(generatorVo.getLogicServicePackage())
-    				   .setNameStrategy(nameStrategy).setPrefix(generatorVo.getPrefix())
+    				   .setNameStrategy(nameStrategy).setPrefix(NamingStrategyType.toCapital(generatorVo.getPrefix()))
     				   .setUseBuilderModel(null == generatorVo.getUseBuilderModel() ? true : generatorVo.getUseBuilderModel());
     	List<TableInfo> tables = dataSourceService.getTables(null);
     	List<String> tableNams = generatorVo.getTableNames();

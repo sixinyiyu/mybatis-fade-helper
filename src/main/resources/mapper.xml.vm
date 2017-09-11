@@ -27,6 +27,14 @@ ${field.name}##
 #end
 #end
 	</sql>
+
+	<sql id="all-query-condition">
+#foreach($field in ${table.fields})
+#parseStringType($field)
+      and ${field.name} = #{${field.propertyName}}
+    </if>
+#end	
+	</sql>
 	
 #macro(parseStringType $filed)
 	#if(${field.propertyType.equals("String")})
@@ -85,24 +93,14 @@ ${field.name}##
 	<!-- Query limit one -->
 	<select id="queryLimitOne" resultMap="BaseResultMap" parameterType="${package.Entity}.${entityName}">
 		select <include refid="all-column" /> from <include refid="table-name"/> 
-		where 1=1
-#foreach($field in ${table.fields})
-#parseStringType($field)
-	      and ${field.name} = #{${field.propertyName}}
-	    </if>
-#end
+		where 1=1   <include refid="all-query-condition"/>
         limit 1
 	</select>
 	
 	<!-- Query By Cond -->
 	<select id="queryByCond" resultMap="BaseResultMap" parameterType="${package.Entity}.${entityName}">
 		select <include refid="all-column" /> from <include refid="table-name"/> 
-		where 1=1
-#foreach($field in ${table.fields})
-  #parseStringType($field)
-	      and ${field.name} = #{${field.propertyName}}
-	    </if>
-#end
+		where 1=1 <include refid="all-query-condition"/> 
 	</select>
 	
 	<!-- Query By Primary Key -->
@@ -110,6 +108,16 @@ ${field.name}##
 		select
 		<include refid="all-column" />
 		from <include refid="table-name"/> where ${table.keyField.name} = #{${table.keyField.propertyName}}
+	</select>
+	
+	<!-- Query By Primary Keys-->
+	<select id="queryBy${table.keyField.capitalPropertyName}s" resultMap="BaseResultMap" parameterType="java.util.List">
+		select
+		<include refid="all-column" />
+		from <include refid="table-name"/> where ${table.keyField.name} in 
+		<foreach collection="keys" item="key" open="(" close=")" separator=",">
+			#{key}
+		</foreach>
 	</select>
 	
 	<!-- Update By Primary Key -->

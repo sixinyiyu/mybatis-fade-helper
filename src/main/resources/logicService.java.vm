@@ -22,7 +22,7 @@ import ${package.Entity}.${entityName};
  * @date: ${date}
  * @since JDK 1.8
  */
-@Service(value = "logic${table.entityName}Service")
+@Service(value = "${table.letterEntityName}LogicService")
 public class ${table.entityName}LogicService implements I${table.entityName}LogicService {
 
 	@Autowired
@@ -90,6 +90,16 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	public ${entityName} query${table.entityName}By${table.keyField.capitalPropertyName} (${table.keyField.propertyType} ${table.keyField.propertyName}) {
 		try {
 			return ${table.letterEntityName}Mapper.queryBy${table.keyField.capitalPropertyName}(${table.keyField.propertyName});
+		} catch(Exception e) {
+			throw new DaoException("数据库异常", e);
+		}
+	}
+	
+	/**主键批量查询 可能返回空列表*/
+	@Override
+	List<${entityName}> query${table.entityName}By${table.keyField.capitalPropertyName}s (List<${table.keyField.propertyType}> ${table.keyField.propertyName}s) {
+		try {
+			return ${table.letterEntityName}Mapper.queryBy${table.keyField.capitalPropertyName}s(${table.keyField.propertyName}s);
 		} catch(Exception e) {
 			throw new DaoException("数据库异常", e);
 		}

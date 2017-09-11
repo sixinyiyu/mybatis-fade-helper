@@ -27,7 +27,6 @@ public class ${entityName} implements Serializable {
 	private ${field.propertyType} ${field.propertyName};
 	
 #end
-
 ## set/get方法
 #foreach($field in ${table.fields})
 ## 针对is开头Boolean属性处理

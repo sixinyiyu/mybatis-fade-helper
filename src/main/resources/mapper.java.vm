@@ -26,6 +26,9 @@ public interface ${table.entityName}Mapper {
 	int insertRecords(@Param("records") List<${entityName}> records);
 	
 	${entityName} queryLimitOne(${entityName} entity);
+	
+	/**批量主键查询*/
+	List<${entityName}> queryBy${table.keyField.capitalPropertyName}s(@Param("keys") List<${table.keyField.propertyType}> ${table.keyField.propertyName}s);
 
 	/**条件查询*/
 	List<${entityName}> queryByCond(${entityName} entity);

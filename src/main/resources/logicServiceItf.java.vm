@@ -34,6 +34,9 @@ public interface I${table.entityName}LogicService {
 	/**主键查询*/
 	${entityName} query${table.entityName}By${table.keyField.capitalPropertyName} (${table.keyField.propertyType} ${table.keyField.propertyName});
 	
+	/**主键批量查询*/
+	List<${entityName}> query${table.entityName}By${table.keyField.capitalPropertyName}s (List<${table.keyField.propertyType}> ${table.keyField.propertyName}s);
+	
 	/**主键更新*/
 	boolean update${table.entityName}By${table.keyField.capitalPropertyName} (${entityName} entity);
 	
