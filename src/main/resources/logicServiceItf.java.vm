@@ -29,7 +29,7 @@ public interface I${table.entityName}LogicService {
 	List<${entityName}> queryByCond(${entityName} entity);
 	
 	/**分页查询*/
-	Page<${entityName}> pageQueryByCond(${entityName} entity, int pageNum, int pageSize);
+	PageDto<${entityName}> pageQueryByCond(${entityName} entity, int pageNum, int pageSize);
 	
 	/**主键查询*/
 	${entityName} query${table.entityName}By${table.keyField.capitalPropertyName} (${table.keyField.propertyType} ${table.keyField.propertyName});

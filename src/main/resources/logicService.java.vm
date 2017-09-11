@@ -33,8 +33,8 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 	public ${table.keyField.propertyType} insert${table.entityName}(${entityName} entity) {
 	   ${table.keyField.propertyType} ${table.keyField.propertyName} = null;
 	   try {
-			${table.letterEntityName}Mapper.insertSelective(entry);
-			${table.keyField.propertyName} = entry.get${table.keyField.capitalPropertyName}();
+			${table.letterEntityName}Mapper.insertSelective(entity);
+			${table.keyField.propertyName} = entity.get${table.keyField.capitalPropertyName}();
 		} catch (Exception e) {
 			throw new DaoException("数据库异常", e);
 		}
@@ -78,7 +78,7 @@ public class ${table.entityName}LogicService implements I${table.entityName}Logi
 		try {
 			Page<${entityName}> page = PageHelper.startPage(pageNum, pageSize)
 					.doSelectPage(() -> ${table.letterEntityName}Mapper.queryByCond(entity));
-			result = new PageDto<>(pageSize, pageNum, page.getResult(), Integer.getInteger(page.getTotal() + ""));
+			result = new PageDto<>(pageSize, pageNum, page.getResult(), Integer.valueOf(page.getTotal() + ""));
 		} catch (Exception e) {
 			throw new DaoException("数据库异常", e);
 		}

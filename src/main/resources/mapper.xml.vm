@@ -30,14 +30,14 @@ ${field.name}##
 	
 #macro(parseStringType $filed)
 	#if(${field.propertyType.equals("String")})
-		<if test="${field.propertyName} != null and ${field.propertyName} != ''">
+   <if test="${field.propertyName} != null and ${field.propertyName} != ''">
 	#else
 	<if test="${field.propertyName} != null">
 	#end
 #end
 	
 	<!-- Selective Insert-->
-	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="${table.keyField.propertyName}" parameterType="${package.Entity}.${table.entityName}">
+	<insert id="insertSelective" useGeneratedKeys="true" keyProperty="${table.keyField.propertyName}" parameterType="${package.Entity}.${entityName}">
 		insert into <include refid="table-name"/>
 		<trim prefix="(" suffix=")" suffixOverrides="," >
 #foreach($field in ${table.fields})
