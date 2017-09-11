@@ -218,7 +218,8 @@ public  class DbServiceHelper {
         else if (targetType.equals("double"))
             return "Double";
         else if (targetType.equals("bit"))
-            return "Boolean";
+//            return "Boolean";
+        	return "Integer";
         else if (targetType.equals("blob") || targetType.contains("binary"))
             return "byte[]";
         else if (targetType.equals("decimal"))
