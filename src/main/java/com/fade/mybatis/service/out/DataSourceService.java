@@ -156,7 +156,6 @@ public class DataSourceService {
     		table.setFields(dbServiceHelper.getTableFields(table.getName(), generatorConfig.getNameStrategy(), generatorConfig.getPrefix()));
     		table.setEntityName(NamingStrategyType.toCapital(NamingStrategyType.converNaming(table.getCapitalName(), generatorConfig.getNameStrategy(), generatorConfig.getPrefix())));
     		VelocityContext ctx = new VelocityContext();
-    		System.out.println(table.getCapitalName());
     		String entityName = table.getEntityName();
     		ctx.put("author",author);
         	ctx.put("date", date);

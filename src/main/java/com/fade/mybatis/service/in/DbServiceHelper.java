@@ -209,7 +209,7 @@ public  class DbServiceHelper {
         else if (targetType.contains("int"))
             return "Integer";
         /**时间戳是否考虑用Date*/
-        else if (targetType.equals("timestamp"))
+        else if (targetType.equals("timestamp") || targetType.equals("datetime"))
             return "Date";//"Timestamp";
         else if (targetType.equals("date") || targetType.equals("year"))
             return "Date";
